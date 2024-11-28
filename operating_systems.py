@@ -40,10 +40,17 @@ class ProcessTable:
             if process["process_num"] == process_num:
                 process["status"] = status
                 break
+            
+    def setProcessAttribute(self, process_num = 0, attribute_name = "status", attribute_value = "ready"):
+        for process in self.__table:
+            if process["process_num"] == process_num:
+                process[attribute_name] = attribute_value
+                break
         
     def printTable(self):
+        print("Name   |  AT     |  BT     |  CT     |  RT     |  TT     |  WT     |  Status")
         for process in self.__table:
-            for item in process.items(): print(f"p{item[1]}", end="") if item[0] == "process_num" else print(" | ", item[1], end="")
+            for item in process.items(): print(f"p{item[1]}", (5 - len(f"p{item[1]}")) * " ", end="") if item[0] == "process_num" else print(" | ", item[1], (5 - len(f"{item[1]}")) * " " if item[0] != None else (5 - len("None")) * " ", end="")
             print()
             
     def isAllProcessComplete(self):
@@ -82,3 +89,29 @@ class ReadyQueue(Queue):
         
 class ExecutingQueue(Queue):
     pass
+
+class GanttChart:
+    def __init__(self):
+        self._chart = ""
+        
+    def getChart(self):
+        return self._chart
+        
+    def appendProcess(self, process_num = 0, arrival_time = 0):
+        if len(self._chart) == 0:
+            self._chart += f"{arrival_time}--[p{process_num}]--|"
+            return
+        self._chart = self._chart[:-len(str(arrival_time))] + f"{arrival_time}--[p{process_num}]--|"
+        
+    def appendIdle(self, unit_time):
+        if len(self._chart) == 0:
+            self._chart += f"{unit_time}--[IDLE]--|"
+            return
+        self._chart = self._chart[:-len(str(unit_time))] + f"{unit_time}--[IDLE]--|"
+        
+    def appendCompletionTime(self, completion_time = 0):
+        self._chart = self._chart[:-1] + f"{completion_time}"
+        
+    def printChart(self):
+        print("Gannt Chart:")
+        print(f"    {self._chart}")

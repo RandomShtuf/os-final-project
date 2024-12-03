@@ -1,4 +1,5 @@
 from os_libs.operating_system import ProcessTable, ReadyQueue, ExecutingQueue, GanttChart
+#from operating_system import ProcessTable, ReadyQueue, ExecutingQueue, GanttChart
 from time import sleep
 from os import system
 
@@ -63,7 +64,7 @@ def schedule(process_table, ready_queue, executing_queue, gantt_chart):
         #input("Press Enter To Continue: ")
             
         unit_time += 1
-        sleep(1)
+        #sleep(1)
         
     bt_sum = 0
     tt_sum = 0

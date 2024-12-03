@@ -137,23 +137,34 @@ class GanttChart:
         return self._chart
         
     def appendProcess(self, process_num = 0, arrival_time = 0):
-        self._chart.append(f"p{process_num}")
+        arrival_time_digits = len(str(arrival_time))
+        if arrival_time < 10: self._chart.append(f"[p{process_num}]")
+        else: self._chart.append((arrival_time_digits // 2 + 1) * " " + f"[p{process_num}]" + (arrival_time_digits // 2 + 1) * " ")
         self._time_stamps.append(arrival_time)
         
     def appendIdle(self, unit_time):
-        self._chart.append("IDLE")
+        unit_time_digits = len(str(unit_time))
+        if unit_time < 10: self._chart.append("[IDLE]")
+        else: self._chart.append((unit_time_digits // 2 + 1) * " " + "[IDLE]" + (unit_time_digits // 2 + 1) * " ")
         self._time_stamps.append(unit_time)
         
     def appendCompletionTime(self, completion_time = 0):
         self._time_stamps.append(completion_time)
         
     def printChart(self):
-        chart = "|[ " + " ]|[ ".join(self._chart) + " ]|"
+        chart = "| " + " | ".join(self._chart) + " |"
         print("Gannt Chart:")
         print(4 * " " + chart, end = "\n" + 4 * " ")
         i = 0
+        remaining_time_stamp_digits = 0
         for char in chart:
             if i > len(self._time_stamps) - 1: break
-            print(self._time_stamps[i], end = "") if char == "|" else print(" ", end = "")
-            if char == "|": i += 1
+            if char == "|":
+                print(self._time_stamps[i], end = "")
+                remaining_time_stamp_digits = len(str(self._time_stamps[i])) - 1
+                i += 1
+            elif remaining_time_stamp_digits == 0:
+                print(" ", end = "")
+            else:
+                remaining_time_stamp_digits -= 1
         print()

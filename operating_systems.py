@@ -1,3 +1,5 @@
+from typing import List
+
 class Process:
     def __init__(self, process_num = 0, arrival_time = 0, burst_time = 0):
         self.__process_num = process_num
@@ -46,12 +48,48 @@ class ProcessTable:
             if process["process_num"] == process_num:
                 process[attribute_name] = attribute_value
                 break
+    
+    def _getCellNames(self):
+        names: List[str]= []
+        for key in self.__table[0].keys():
+            names.append(key)
+            
+        return names
+    
+    def _getTableItems(self):
+        items = []
+        for process in self.__table:
+            items.append(list(process.values()))
+        
+        return items
+    
+    def _getColumnSizes(self, table):
+        column_sizes = []
+        for i in range(len(table[0])):
+            cell_sizes = []
+            for row in table: cell_sizes.append(len(str(row[i])))
+            column_sizes.append(max(cell_sizes))
+        
+        return column_sizes
+            
+    def _printRowDivider(self, row):
+        for char in row: print("-", end = "") if char != "|" else print("+", end = "")
+        print()
         
     def printTable(self):
-        print("Name   |  AT     |  BT     |  CT     |  RT     |  TT     |  WT     |  Status")
-        for process in self.__table:
-            for item in process.items(): print(f"p{item[1]}", (5 - len(f"p{item[1]}")) * " ", end="") if item[0] == "process_num" else print(" | ", item[1], (5 - len(f"{item[1]}")) * " " if item[0] != None else (5 - len("None")) * " ", end="")
-            print()
+        display_table = []
+        display_table.append(self._getCellNames())
+        display_table += self._getTableItems()
+        column_sizes = self._getColumnSizes(display_table)
+        
+        for row in display_table:
+            is_first_row = False 
+            if row == display_table[0]: is_first_row = True
+            for i in range(len(row)): row[i] = str(row[i]) + (column_sizes[i] - len(str(row[i]))) * " "
+            row = "| " + " | ".join(row) + " |"
+            if is_first_row: self._printRowDivider(row)
+            print(row)
+            self._printRowDivider(row)
             
     def isAllProcessComplete(self):
         not_terminated = 0
@@ -92,26 +130,30 @@ class ExecutingQueue(Queue):
 
 class GanttChart:
     def __init__(self):
-        self._chart = ""
+        self._chart = []
+        self._time_stamps = []
         
     def getChart(self):
         return self._chart
         
     def appendProcess(self, process_num = 0, arrival_time = 0):
-        if len(self._chart) == 0:
-            self._chart += f"{arrival_time}--[p{process_num}]--|"
-            return
-        self._chart = self._chart[:-len(str(arrival_time))] + f"{arrival_time}--[p{process_num}]--|"
+        self._chart.append(f"p{process_num}")
+        self._time_stamps.append(arrival_time)
         
     def appendIdle(self, unit_time):
-        if len(self._chart) == 0:
-            self._chart += f"{unit_time}--[IDLE]--|"
-            return
-        self._chart = self._chart[:-len(str(unit_time))] + f"{unit_time}--[IDLE]--|"
+        self._chart.append("IDLE")
+        self._time_stamps.append(unit_time)
         
     def appendCompletionTime(self, completion_time = 0):
-        self._chart = self._chart[:-1] + f"{completion_time}"
+        self._time_stamps.append(completion_time)
         
     def printChart(self):
+        chart = "|[ " + " ]|[ ".join(self._chart) + " ]|"
         print("Gannt Chart:")
-        print(f"    {self._chart}")
+        print(4 * " " + chart, end = "\n" + 4 * " ")
+        i = 0
+        for char in chart:
+            if i > len(self._time_stamps) - 1: break
+            print(self._time_stamps[i], end = "") if char == "|" else print(" ", end = "")
+            if char == "|": i += 1
+        print()

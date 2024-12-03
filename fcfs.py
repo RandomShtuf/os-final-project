@@ -89,7 +89,6 @@ for process in process_table.getTable():
 #system("cls")
 process_table.printTable()
 gantt_chart.printChart()
-print()
 print(f"Turnaround Time Average: {tt_sum / len(process_table.getTable()): .2f}")
 print(f"Waiting Time Average: {wt_sum / len(process_table.getTable()): .2f}")
 print(f"CPU Utilization: {(bt_sum / unit_time) * 100: .2f}%")

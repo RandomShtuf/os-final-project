@@ -96,7 +96,7 @@ class ProcessTable:
         for process in self.__table:
             if process["status"] != "terminated": not_terminated += 1
             
-        return  not_terminated == 0
+        return not_terminated == 0
     
 class Queue:
     def __init__(self):

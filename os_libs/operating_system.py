@@ -85,7 +85,7 @@ class ProcessTable:
         for row in display_table:
             is_first_row = False 
             if row == display_table[0]: is_first_row = True
-            for i in range(len(row)): row[i] = str(row[i]) + (column_sizes[i] - len(str(row[i]))) * " "
+            for i in range(len(row)): row[i] = (f"{row[i]}" if i != 0 else f"p{row[i]}") + (column_sizes[i] - len(str(row[i]))) * " "
             row = "| " + " | ".join(row) + " |"
             if is_first_row: self._printRowDivider(row)
             print(row)

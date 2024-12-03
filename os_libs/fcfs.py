@@ -1,4 +1,4 @@
-from operating_systems import ProcessTable, ReadyQueue, ExecutingQueue, GanttChart
+from os_libs.operating_system import ProcessTable, ReadyQueue, ExecutingQueue, GanttChart
 from time import sleep
 from os import system
 
@@ -30,7 +30,7 @@ def handleIdle(gantt_chart, unit_time):
     if gantt_chart.getChart()[-1] != "IDLE":
         gantt_chart.appendIdle(unit_time)
         
-def isSchedulingComplete(process_table, unit_time):
+def isSchedulingComplete(process_table, gantt_chart, unit_time):
     if process_table.isAllProcessComplete():
         gantt_chart.appendCompletionTime(unit_time)
         return True
@@ -47,7 +47,7 @@ def schedule(process_table, ready_queue, executing_queue, gantt_chart):
         if not executing_queue.isEmpty():
             is_idle = False
             handleExecutingProcess(process_table, executing_queue, gantt_chart, unit_time)
-            if isSchedulingComplete(process_table, unit_time): break
+            if isSchedulingComplete(process_table, gantt_chart, unit_time): break
         handleArrivingProcess(process_table, ready_queue, unit_time)
         if executing_queue.isEmpty() and not ready_queue.isEmpty():
             executeReadyProcess(process_table, ready_queue, executing_queue, gantt_chart, unit_time)

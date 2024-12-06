@@ -2,25 +2,25 @@ from typing import List
 
 class Process:
     def __init__(self, process_num = 0, arrival_time = 0, burst_time = 0):
-        self.__process_num = process_num
-        self.__arrival_time = arrival_time
-        self.__burst_time = burst_time
+        self._process_num = process_num
+        self._arrival_time = arrival_time
+        self._burst_time = burst_time
         
     def getProcessNum(self):
-        return self.__process_num
+        return self._process_num
     def getArrivalTime(self):
-        return self.__arrival_time
+        return self._arrival_time
     def getBurstTime(self):
-        return self.__burst_time
+        return self._burst_time
     def setBurstTime(self, burst_time):
-        self.__burst_time = burst_time
+        self._burst_time = burst_time
     
 class ProcessTable:
     def __init__(self):
-        self.__table = []
+        self._table = []
         
     def getTable(self):
-        table = self.__table
+        table = self._table
         return table
         
     def addProcess(self, process_num = 0, arrival_time = 0, burst_time = 0):
@@ -35,30 +35,30 @@ class ProcessTable:
             "status": "new"
             }
         
-        self.__table.append(process)
+        self._table.append(process)
         
     def updateProcessStatus(self, process_num, status):
-        for process in self.__table:
+        for process in self._table:
             if process["process_num"] == process_num:
                 process["status"] = status
                 break
             
     def setProcessAttribute(self, process_num = 0, attribute_name = "status", attribute_value = "ready"):
-        for process in self.__table:
+        for process in self._table:
             if process["process_num"] == process_num:
                 process[attribute_name] = attribute_value
                 break
     
     def _getCellNames(self):
         names: List[str]= []
-        for key in self.__table[0].keys():
+        for key in self._table[0].keys():
             names.append(key)
             
         return names
     
     def _getTableItems(self):
         items = []
-        for process in self.__table:
+        for process in self._table:
             items.append(list(process.values()))
         
         return items
@@ -85,7 +85,7 @@ class ProcessTable:
         for row in display_table:
             is_first_row = False 
             if row == display_table[0]: is_first_row = True
-            for i in range(len(row)): row[i] = (f"{row[i]}" if i != 0 else f"p{row[i]}") + (column_sizes[i] - len(str(row[i]))) * " "
+            for i in range(len(row)): row[i] = (f"{row[i]} " if i != 0 or is_first_row else f"p{row[i]}") + (column_sizes[i] - len(str(row[i]))) * " "
             row = "| " + " | ".join(row) + " |"
             if is_first_row: self._printRowDivider(row)
             print(row)
@@ -93,7 +93,7 @@ class ProcessTable:
             
     def isAllProcessComplete(self):
         not_terminated = 0
-        for process in self.__table:
+        for process in self._table:
             if process["status"] != "terminated": not_terminated += 1
             
         return not_terminated == 0
@@ -101,6 +101,12 @@ class ProcessTable:
 class Queue:
     def __init__(self):
         self._queue = []
+        
+    def getQueue(self):
+        return self._queue
+    
+    def setQueue(self, queue):
+        self._queue = queue
         
     def peek(self):
         return self._queue[0]
